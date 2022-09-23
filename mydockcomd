@@ -1,1 +1,1 @@
-docker run -v $PWD/.passwd-s3fs:/home/rapidtide/.passwd-s3fs:ro --rm --security-opt apparmor:unconfined --device /dev/fuse --cap-add SYS_ADMIN -it rtpluss3 /bin/bash
+docker run -v $PWD/.passwd-s3fs:/home/rapidtide/.passwd-s3fs:ro --rm --security-opt apparmor:unconfined --device /dev/fuse --cap-add SYS_ADMIN -it rtpluss3 /rapidtide-cmd $1
