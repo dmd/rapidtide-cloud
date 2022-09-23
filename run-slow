@@ -1,0 +1,1 @@
+time rapidtide /data_in/HCP_1200/100307/MNINonLinear/Results/rfMRI_REST1_LR/rfMRI_REST1_LR.nii.gz /data_out/rapidtide_rfMRI_REST1_LR --filterband lfo --searchrange -15 15 --passes 2 --timerange 0 300

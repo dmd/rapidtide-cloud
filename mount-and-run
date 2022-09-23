@@ -1,0 +1,6 @@
+#!/bin/sh
+
+s3fs hcp-openaccess /data_in
+s3fs rapidtide-dmd-test /data_out
+
+exec "$@"
