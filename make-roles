@@ -1,0 +1,5 @@
+aws iam create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://ecs-tasks-trust-policy.json
+aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+aws iam create-role --role-name dmd-rapidtide-role --assume-role-policy-document file://dmd-rapidtide-trust-policy.json
+aws iam attach-role-policy --role-name dmd-rapidtide-role --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
+aws iam attach-role-policy --role-name dmd-rapidtide-role --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
