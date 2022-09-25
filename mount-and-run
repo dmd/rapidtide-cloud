@@ -1,6 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
-s3fs hcp-openaccess /data_in
-s3fs rapidtide-dmd-test /data_out
+# mount data output folder
+# these will authenticate either via IAM or an included .passwd-s3fs
+s3fs dmd-rapidtide-output /data_out
+
+# retrieve credentials from AWS Secrets
+
+s3fs -o passwd_file=<(
+    aws secretsmanager get-secret-value \
+    --region us-east-1 \
+    --output text \
+    --secret-id hcp-openaccess \
+    | cut -d$'\t' -f4 \
+    | jq -jr '.KEY,":",.SECRET'
+) \
+     hcp-openaccess /data_in
 
 exec "$@"

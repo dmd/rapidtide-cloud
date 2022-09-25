@@ -1,0 +1,19 @@
+#!/bin/bash
+
+mkdir -p /data_out/HCP_1200/$1
+
+F1=/data_in/HCP_1200/$1/release-notes/bedpostx.txt
+F2=/data_out/HCP_1200/$1/testfile
+echo COPY
+cp $F1 $F2
+
+echo CHECK...
+if ! diff $F1 $F2 ; then
+    echo COPY FAILED
+else
+    echo COPY PASSED
+fi
+
+echo CLEANING UP
+rm -f $F2
+
