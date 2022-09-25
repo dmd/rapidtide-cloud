@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PARTICIPANT=${1:-100307}
-docker run --env-file ~/.aws -v $PWD/.passwd-s3fs:/home/rapidtide/.passwd-s3fs:ro \
+docker run --env-file ~/.awsenv -v $PWD/.passwd-s3fs:/home/rapidtide/.passwd-s3fs:ro \
 --rm \
 --security-opt apparmor:unconfined \
 --device /dev/fuse \

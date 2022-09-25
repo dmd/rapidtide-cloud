@@ -1,0 +1,2 @@
+docker build -t dmd3eorg/rapidtide-cloud .
+docker push dmd3eorg/rapidtide-cloud

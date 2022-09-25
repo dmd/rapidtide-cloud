@@ -1,5 +1,12 @@
 #!/bin/bash
 
+for MOUNT in /data_in /data_out; do
+    if ! findmnt -t fuse.s3fs $MOUNT ; then
+        echo $MOUNT is not correctly mounted
+        exit 1
+    fi
+done
+
 mkdir -p /data_out/HCP_1200/$1
 
 F1=/data_in/HCP_1200/$1/release-notes/bedpostx.txt
