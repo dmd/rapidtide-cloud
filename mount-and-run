@@ -2,10 +2,17 @@
 
 # mount data output folder
 
-S3FS_AUTH_METHOD=${S3FS_AUTH_METHOD:-iam_role}
-if ! s3fs dmd-rapidtide-output /data_out 2> /dev/null; then
-    s3fs -o $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
+if [ "$AWS_EXECUTION_ENV" == "AWS_ECS_EC2" ]; then
+    # AWS Batch
+    S3FS_AUTH_METHOD="-o ecs"
+elif  $(curl -s -m 1 http://169.254.169.254/latest/dynamic/instance-identity/document | grep -q availabilityZone) ; then
+    # EC2
+    S3FS_AUTH_METHOD="-o iam_role"
+else
+    S3FS_AUTH_METHOD=""
 fi
+
+s3fs $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
 
 # retrieve credentials from AWS Secrets
 
