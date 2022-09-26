@@ -3,7 +3,7 @@
 # mount data output folder
 
 S3FS_AUTH_METHOD=${S3FS_AUTH_METHOD:-iam_role}
-if ! s3fs dmd-rapidtide-output /data_out ; then
+if ! s3fs dmd-rapidtide-output /data_out 2> /dev/null; then
     s3fs -o $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
 fi
 
@@ -18,5 +18,11 @@ s3fs -o passwd_file=<(
     | jq -jr '.KEY,":",.SECRET'
 ) \
      hcp-openaccess /data_in
+
+for MOUNT in /data_in /data_out; do
+    if ! findmnt -n -P -t fuse.s3fs $MOUNT ; then
+        echo WARNING: $MOUNT is not correctly mounted
+    fi
+done
 
 exec "$@"

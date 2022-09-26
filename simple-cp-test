@@ -1,7 +1,7 @@
 #!/bin/bash
 
 for MOUNT in /data_in /data_out; do
-    if ! findmnt -t fuse.s3fs $MOUNT ; then
+    if ! findmnt -n -P -t fuse.s3fs $MOUNT ; then
         echo $MOUNT is not correctly mounted
         exit 1
     fi
