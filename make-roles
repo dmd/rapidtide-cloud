@@ -4,3 +4,6 @@ aws iam create-role --role-name dmd-rapidtide-role --assume-role-policy-document
 aws iam attach-role-policy --role-name dmd-rapidtide-role --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
 aws iam attach-role-policy --role-name dmd-rapidtide-role --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
 aws iam attach-role-policy --role-name dmd-rapidtide-role --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+aws iam create-instance-profile --instance-profile-name dmd-rapidtide-role
+aws iam add-role-to-instance-profile --role-name dmd-rapidtide-role --instance-profile-name dmd-rapidtide-role
+
