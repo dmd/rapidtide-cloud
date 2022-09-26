@@ -1,2 +1,12 @@
+#!/bin/bash
+
+# aws ecr-public create-repository --repository-name rapidtide-cloud --region us-east-1
+# RETURNED:
+REPO=public.ecr.aws/l0v4l2q2/rapidtide-cloud
+
 docker build -t dmd3eorg/rapidtide-cloud .
 docker push dmd3eorg/rapidtide-cloud
+
+docker login --username AWS --password $(aws ecr-public get-login-password --region us-east-1) $REPO
+docker tag dmd3eorg/rapidtide-cloud:latest $REPO
+docker push $REPO

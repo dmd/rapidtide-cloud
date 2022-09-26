@@ -7,5 +7,5 @@ docker run --env-file ~/.awsenv -v $PWD/.passwd-s3fs:/home/rapidtide/.passwd-s3f
 --device /dev/fuse \
 --cap-add SYS_ADMIN \
 -it \
-rtpluss3 \
+dmd3eorg/rapidtide-cloud \
 /simple-cp-test $PARTICIPANT

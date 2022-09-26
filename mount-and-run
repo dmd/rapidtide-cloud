@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # mount data output folder
-# first try via env, then via IAM
+
+S3FS_AUTH_METHOD=${S3FS_AUTH_METHOD:-iam_role}
 if ! s3fs dmd-rapidtide-output /data_out ; then
-    s3fs -o iam_role dmd-rapidtide-output /data_out
+    s3fs -o $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
 fi
 
 # retrieve credentials from AWS Secrets
