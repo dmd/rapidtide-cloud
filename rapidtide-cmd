@@ -12,4 +12,5 @@ rapidtide \
             --filterband lfo \
             --searchrange -15 15 \
             --passes 2 \
+            --nprocs -1 \
             --timerange 0 300
