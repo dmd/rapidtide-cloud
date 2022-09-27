@@ -2,6 +2,11 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   AWS CloudFormation to create the batch job to run rapidtide-cloud,
   and IAM roles to allow it access to S3 and Secrets.
+Parameters:
+  HcpOpenaccessSecret:
+    Type: String
+    Default: 'arn:aws:secretsmanager:us-east-1:256268712194:secret:HCP_OPENACCESS-zSQVSQ'
+    Description: The SecretsManager ARN for the colon-separated KEY:SECRET for the hcp-openaccess S3 bucket.
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -106,11 +111,12 @@ Resources:
           - 100307
         Privileged: true
         JobRoleArn: !Ref SecretsAndS3AccessRole
+        ExecutionRoleArn: !GetAtt SecretsAndS3AccessRole.Arn
+        Secrets:
+          - Name: HCP_OPENACCESS_SECRET
+            ValueFrom: !Ref HcpOpenaccessSecret
       RetryStrategy:
         Attempts: 1
-      Secret:
-        Name: HCP_OPENACCESS_SECRET
-        ValueFrom: arn:aws:secretsmanager:us-east-1:256268712194:secret:HCP_OPENACCESS-zSQVSQ
   JobQueue:
     Type: 'AWS::Batch::JobQueue'
     Properties:
