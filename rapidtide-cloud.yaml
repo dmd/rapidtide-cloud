@@ -104,8 +104,11 @@ Resources:
       Type: container
       ContainerProperties:
         Image: public.ecr.aws/l0v4l2q2/rapidtide-cloud
-        Vcpus: 2
-        Memory: 2000
+        ResourceRequirements:
+          - Type: VCPU
+            Value: 4
+          - Type: MEMORY
+            Value: 30720
         Command:
           - /simple-cp-test
           - 100307
