@@ -108,6 +108,9 @@ Resources:
         JobRoleArn: !Ref SecretsAndS3AccessRole
       RetryStrategy:
         Attempts: 1
+      Secret:
+        Name: HCP_OPENACCESS_SECRET
+        ValueFrom: arn:aws:secretsmanager:us-east-1:256268712194:secret:HCP_OPENACCESS-zSQVSQ
   JobQueue:
     Type: 'AWS::Batch::JobQueue'
     Properties:

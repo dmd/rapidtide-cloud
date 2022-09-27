@@ -14,16 +14,9 @@ fi
 
 s3fs $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
 
-# retrieve credentials from AWS Secrets
+# credentials injected from AWS Secrets in env variable
 
-s3fs -o passwd_file=<(
-    aws secretsmanager get-secret-value \
-    --region us-east-1 \
-    --output text \
-    --secret-id hcp-openaccess \
-    | cut -d$'\t' -f4 \
-    | jq -jr '.KEY,":",.SECRET'
-) \
+s3fs -o passwd_file=<( echo $HCP_OPENACCESS_SECRET ) \
      hcp-openaccess /data_in
 
 for MOUNT in /data_in /data_out; do
