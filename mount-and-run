@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir /data_in /data_out
+
 # mount data output folder
 
 if [ "$AWS_EXECUTION_ENV" == "AWS_ECS_EC2" ]; then
@@ -14,6 +16,7 @@ fi
 
 s3fs $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
 
+# mount data input folder
 # credentials injected from AWS Secrets in env variable
 
 s3fs -o passwd_file=<( echo $HCP_OPENACCESS_SECRET ) \
