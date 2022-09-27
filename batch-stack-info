@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TMP=$(mktemp)
+aws cloudformation list-stack-resources --stack-name $1 > $TMP
+
+for RESOURCE in JobDefinition JobQueue; do
+    echo -en "$RESOURCE\t"
+    <$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "'$RESOURCE'" ))[0].PhysicalResourceId '
+done
+
+\rm $TMP
+
