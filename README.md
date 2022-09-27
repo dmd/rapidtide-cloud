@@ -4,7 +4,4 @@ Tool to run Rapidtide on HCP/ABCD datasets, on AWS.
 
 Requirements:
 
-- must attach an IAM role which has access to
-  - S3
-  - Secrets Manager
-- must have the hcp-openaccess key/secret in a AWS Secret named `hcp-openaccess` under keys `KEY` and `SECRET`
+- must have your hcp-openaccess bucket credential in a AWS Secret in plain text form as key:secret - enter its ARN as a parameter to the stack
