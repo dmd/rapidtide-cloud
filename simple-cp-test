@@ -15,14 +15,14 @@ fi
 P=$1
 
 if [ "$P" == "ARRAY" ]; then
-    P=$(/get-array-line /data_out/config/participants.txt)
+    P=$(/get-array-line /data_out/config/$PARTICIPANT_ARRAY_FILE)
 fi
 
 mkdir -p /data_out/HCP_1200/$P
 
 F1=/data_in/HCP_1200/$P/release-notes/bedpostx.txt
 F2=/data_out/HCP_1200/$P/testfile
-echo COPY
+echo COPY $P
 cp $F1 $F2
 
 echo CHECK...

@@ -8,7 +8,7 @@ fi
 P=$1
 
 if [ "$P" == "ARRAY" ]; then
-    P=$(/get-array-line /data_out/config/participants.txt)
+    P=$(/get-array-line /data_out/config/$PARTICIPANT_ARRAY_FILE)
 fi
 
 mkdir -p /data_out/HCP_1200/${P}

@@ -4,6 +4,7 @@ docker run \
     --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
     --env AWS_BATCH_JOB_ARRAY_INDEX=3 \
     --env OUTPUT_BUCKET=dmd-rapidtide-output \
+    --env PARTICIPANT_ARRAY_FILE=participants.txt \
     --env-file ~/.awsenv \
     --rm \
     --security-opt apparmor:unconfined \

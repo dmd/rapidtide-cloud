@@ -4,6 +4,7 @@ PARTICIPANT=${1:-100307}
 docker run \
     --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
     --env OUTPUT_BUCKET=dmd-rapidtide-output \
+    --env PARTICIPANT_ARRAY_FILE=participants.txt \
     --env-file ~/.awsenv \
     --rm \
     --security-opt apparmor:unconfined \
