@@ -3,10 +3,9 @@
 TMP=$(mktemp)
 aws cloudformation list-stack-resources --stack-name $1 > $TMP
 
-for RESOURCE in JobDefinition JobQueue; do
-    echo -en "$RESOURCE\t"
-    <$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "'$RESOURCE'" ))[0].PhysicalResourceId '
-done
+
+echo --job-queue $(<$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "JobQueue" ))[0].PhysicalResourceId ') \
+     --job-definition $(<$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "JobDefinition" ))[0].PhysicalResourceId ')
 
 \rm $TMP
 

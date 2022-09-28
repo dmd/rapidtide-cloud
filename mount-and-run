@@ -14,7 +14,7 @@ else
     S3FS_AUTH_METHOD=""
 fi
 
-s3fs $S3FS_AUTH_METHOD dmd-rapidtide-output /data_out
+s3fs $S3FS_AUTH_METHOD $OUTPUT_BUCKET /data_out
 
 # mount data input folder
 # credentials injected from AWS Secrets in env variable
