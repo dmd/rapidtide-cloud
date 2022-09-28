@@ -7,10 +7,21 @@ for MOUNT in /data_in /data_out; do
     fi
 done
 
-mkdir -p /data_out/HCP_1200/$1
+if [ -z "$1" ];  then
+    echo "Missing participant id."
+    exit 1
+fi
 
-F1=/data_in/HCP_1200/$1/release-notes/bedpostx.txt
-F2=/data_out/HCP_1200/$1/testfile
+P=$1
+
+if [ "$P" == "ARRAY" ]; then
+    P=$(/get-array-line /data_out/config/participants.txt)
+fi
+
+mkdir -p /data_out/HCP_1200/$P
+
+F1=/data_in/HCP_1200/$P/release-notes/bedpostx.txt
+F2=/data_out/HCP_1200/$P/testfile
 echo COPY
 cp $F1 $F2
 
@@ -23,4 +34,3 @@ fi
 
 echo CLEANING UP
 rm -f $F2
-
