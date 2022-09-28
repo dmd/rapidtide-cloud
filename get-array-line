@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 filename [index]"
+    echo "If index is not specified, use AWS_BATCH_JOB_ARRAY_INDEX."
+    exit 1
+fi
+
+if [ -z "$AWS_BATCH_JOB_ARRAY_INDEX" ] && [ -z "$2" ]; then
+    echo You must specify an 0-based index or AWS_BATCH_JOB_ARRAY_INDEX must be set.
+    exit 1
+fi
+
+INDEX=${2:-$AWS_BATCH_JOB_ARRAY_INDEX}
+LINE=$((INDEX + 1))
+echo $(sed -n ${LINE}p $1)

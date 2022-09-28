@@ -1,0 +1,14 @@
+#!/bin/bash
+
+docker run \
+    --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
+    --env AWS_BATCH_JOB_ARRAY_INDEX=3 \
+    --env OUTPUT_BUCKET=dmd-rapidtide-output \
+    --env-file ~/.awsenv \
+    --rm \
+    --security-opt apparmor:unconfined \
+    --device /dev/fuse \
+    --cap-add SYS_ADMIN \
+    -it \
+    dmd3eorg/rapidtide-cloud \
+    /simple-cp-test ARRAY
