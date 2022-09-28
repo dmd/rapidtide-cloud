@@ -13,4 +13,10 @@ fi
 
 INDEX=${2:-$AWS_BATCH_JOB_ARRAY_INDEX}
 LINE=$((INDEX + 1))
-echo $(sed -n ${LINE}p $1)
+OUTPUT=$(sed -n ${LINE}p $1)
+
+if [ -z "$OUTPUT" ]; then
+   exit 1
+fi
+
+echo $OUTPUT
