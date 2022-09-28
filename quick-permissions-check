@@ -1,10 +1,11 @@
 #!/bin/bash
 
-PARTICIPANT=${1:-100307}
+TARGET=${1:-100307}
 docker run \
     --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
     --env OUTPUT_BUCKET=dmd-rapidtide-output \
     --env PARTICIPANT_ARRAY_FILE=participants.txt \
+    --env AWS_BATCH_JOB_ARRAY_INDEX=1 \
     --env-file ~/.awsenv \
     --rm \
     --security-opt apparmor:unconfined \
@@ -12,4 +13,4 @@ docker run \
     --cap-add SYS_ADMIN \
     -it \
     dmd3eorg/rapidtide-cloud \
-    /simple-cp-test $PARTICIPANT
+    /simple-cp-test $TARGET

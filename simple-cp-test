@@ -7,7 +7,7 @@ for MOUNT in /data_in /data_out; do
     fi
 done
 
-if [ -z "$1" ];  then
+if [ $# -ne 1 ]; then
     echo "Missing participant id."
     exit 1
 fi
@@ -15,11 +15,7 @@ fi
 P=$1
 
 if [ "$P" == "ARRAY" ]; then
-    P=$(/get-array-line /data_out/config/$PARTICIPANT_ARRAY_FILE)
-fi
-if [ -z "$P" ]; then
-    echo "FAILed to retrieve index $AWS_BATCH_JOB_ARRAY_INDEX from $PARTICIPANT_ARRAY_FILE."
-    exit 1
+    P=$PARTICIPANT_FROM_ARRAY
 fi
 
 mkdir -p /data_out/HCP_1200/$P

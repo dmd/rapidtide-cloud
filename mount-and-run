@@ -28,4 +28,13 @@ for MOUNT in /data_in /data_out; do
     fi
 done
 
+if [ -n "$AWS_BATCH_JOB_ARRAY_INDEX" ]; then
+    export PARTICIPANT_FROM_ARRAY=$(/get-array-line /data_out/config/$PARTICIPANT_ARRAY_FILE)
+    if [ -z "$PARTICIPANT_FROM_ARRAY" ]; then
+        echo "Failed to retrieve index $AWS_BATCH_JOB_ARRAY_INDEX from $PARTICIPANT_ARRAY_FILE."
+        exit 1
+    fi
+    echo Set PARTICIPANT_FROM_ARRAY=$PARTICIPANT_FROM_ARRAY
+fi
+
 exec "$@"
