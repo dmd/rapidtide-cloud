@@ -51,15 +51,9 @@ Copy down the `ARN`.
 
 ### Create your Cloudformation stack.
 
-Pick a name for your stack, e.g. MyRapidtideStack. It doesn't matter what it is.
+Pick a name for your stack, e.g. *MyRapidtideStack*. It doesn't matter what it is as long as it's unique.
 
-Run:
-
-```bash
-./awsstack-create MyRapidtideStack YourBucketName YourARN
-```
-
-where YourARN is the long `arn:aws...` string you copied down above.
+Run: `./awsstack-create` and follow the prompt to enter a stack name, your S3 output bucket name, and your ARN (the long `arn:aws...` string you copied down above).
 
 ## Test!
 
