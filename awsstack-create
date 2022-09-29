@@ -1,23 +1,32 @@
 #!/bin/bash
 set -e
 
-echo "Enter a name for your Cloudformation stack."
+NOW=$(date +%s)
+CFNSTACK=${CFNSTACK:-rapidtide-cfn-$NOW}
+echo "Enter a name for your Cloudformation stack or use this default."
 echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
 read -e -i "$CFNSTACK" -p "Stack name: " CFNSTACK
-echo $CFNSTACK
 
 echo -e "\nEnter the name of the S3 bucket you've created for your output data."
 read -e -i "$S3OUTBUCKET" -p "Bucket name: " S3OUTBUCKET
+
+# fail and exit if we cannot read it
 aws s3 ls $S3OUTBUCKET > /dev/null
 
+echo -e "\nEnter the AWS Access Key ID you were given for hcp-openaccess."
+echo "This is NOT your own AWS credentials."
+read -e -p "Access Key ID: " HCPKEY
+read -e -p "Access Key Secret: " HCPSEC
 
-echo -e "\nEnter the ARN of the secret you saved."
-read -e -i "$SECRETARN" -p "ARN of secret: " SECRETARN
-if [[ $SECRETARN != arn:aws:secret* ]]; then
-    echo "That doesn't look like an ARN."
-    exit 1
-fi
-aws secretsmanager describe-secret --secret-id=$SECRETARN > /dev/null
+# fail and exit if we cannot read hcp-openaccess with those credentials
+AWS_ACCESS_KEY_ID=$HCPKEY AWS_SECRET_ACCESS_KEY=$HCPSEC \
+    aws s3 ls hcp-openaccess > /dev/null
+
+SECRETARN=$(
+    aws secretsmanager create-secret \
+    --name HCP_OPENACCESS_$NOW \
+    --secret-string "$HCPKEY:$HCPSEC" \
+    | grep ARN | cut -d '"' -f4 )
 
 export AWS_PAGER=
 aws cloudformation create-stack \
