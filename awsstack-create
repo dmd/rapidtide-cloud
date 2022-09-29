@@ -43,8 +43,9 @@ aws cloudformation create-stack \
       ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET \
       ParameterKey=HcpOpenaccessSecret,ParameterValue=$SECRETARN
 
+echo $CFNSTACK > your-stack-name.txt
+echo "Creating your stack: $CFNSTACK"
 echo "Waiting for completion, this will take several minutes."
-echo "You may Control-c if you don't want to wait; this will not stop the task."
 aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
-echo "Done."
+echo "Done creating $CFNSTACK."
 

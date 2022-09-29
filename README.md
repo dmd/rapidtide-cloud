@@ -25,9 +25,25 @@ Once your stack is created you're ready to submit a test job. Run:
 
 ```bash
 aws batch submit-job \
-    $(./batch-stack-info MyRapidtideStack) \
+    $(./batch-stack-info) \
     --job-name myFirstJob \
     --container-overrides command="/simple-cp-test,100307"
 ```
 
 Head over to the [Batch console](https://us-east-1.console.aws.amazon.com/batch) and see how it goes. 
+
+## Run an ARRAY job
+
+In your output bucket, create a directory called `config`, and inside it a file called `participants.txt`.  Each line of that file should be a HCP participant number.
+
+Run:
+
+```bash
+aws batch submit-job \
+    $(./batch-stack-info) \
+    --job-name myFirstArrayJob \
+    --array-properties size=5 \
+    --container-overrides command="/simple-cp-test,ARRAY"
+```
+
+The number given to `size=` must be <= the number of lines in `participants.txt`.

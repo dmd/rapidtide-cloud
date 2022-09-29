@@ -2,7 +2,8 @@
 set -e
 
 TMP=$(mktemp)
-aws cloudformation list-stack-resources --stack-name $1 > $TMP
+STACK=${1:-$(cat your-stack-name.txt)}
+aws cloudformation list-stack-resources --stack-name $STACK > $TMP
 
 echo --job-queue $(grep job-queue $TMP | cut -d'"' -f4) \
      --job-definition $(grep job-defin $TMP | cut -d'"' -f4)
