@@ -52,12 +52,12 @@ Copy down the `ARN`.
 
 ### Create your Cloudformation stack.
 
-Pick a name for your stack, e.g. MyRapidTideStack. It doesn't matter what it is.
+Pick a name for your stack, e.g. MyRapidtideStack. It doesn't matter what it is.
 
 Run:
 
 ```bash
-./awsstack-create MyRapidTideStack YourBucketName YourARN
+./awsstack-create MyRapidtideStack YourBucketName YourARN
 ```
 
 where YourARN is the long `arn:aws...` string you copied down above.
@@ -68,7 +68,7 @@ Once your stack is created you're ready to submit a test job. Run:
 
 ```bash
 aws batch submit-job \
-    $(./batch-stack-info MyRapidTideStack) \
+    $(./batch-stack-info MyRapidtideStack) \
     --job-name myFirstJob \
     --container-overrides command="/simple-cp-test"
 ```
