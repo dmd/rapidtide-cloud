@@ -70,7 +70,7 @@ Once your stack is created you're ready to submit a test job. Run:
 aws batch submit-job \
     $(./batch-stack-info MyRapidtideStack) \
     --job-name myFirstJob \
-    --container-overrides command="/simple-cp-test"
+    --container-overrides command="/simple-cp-test,100307"
 ```
 
 Head over to the [Batch console](https://us-east-1.console.aws.amazon.com/batch) and see how it goes. 
