@@ -24,12 +24,14 @@ s3fs -o passwd_file=<( echo $HCP_OPENACCESS_SECRET ) \
 
 for MOUNT in /data_in /data_out; do
     if ! findmnt -n -P -t fuse.s3fs $MOUNT ; then
-        echo WARNING: $MOUNT is not correctly mounted
+        echo ERROR: $MOUNT is not correctly mounted
+        exit 1
     fi
 done
 
 if [ -n "$AWS_BATCH_JOB_ARRAY_INDEX" ]; then
-    export PARTICIPANT_FROM_ARRAY=$(/get-array-line /data_out/config/$PARTICIPANT_ARRAY_FILE)
+    LINE=$((AWS_BATCH_JOB_ARRAY_INDEX + 1))
+    export PARTICIPANT_FROM_ARRAY=$(sed -n ${LINE}p /data_out/config/$PARTICIPANT_ARRAY_FILE)
     if [ -z "$PARTICIPANT_FROM_ARRAY" ]; then
         echo "Failed to retrieve index $AWS_BATCH_JOB_ARRAY_INDEX from $PARTICIPANT_ARRAY_FILE."
         exit 1
