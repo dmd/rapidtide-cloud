@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
+if [[ $# -ne 1 ]]; then
     echo "Missing participant id."
     exit 1
 fi
 
 P=$1
 
-if [ "$P" == "ARRAY" ]; then
+if [[ $P == ARRAY ]]; then
     P=$PARTICIPANT_FROM_ARRAY
 fi
 

@@ -9,7 +9,7 @@ fi
 docker run \
     --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
     --env OUTPUT_BUCKET=dmd-rapidtide-output \
-    $ADDL_ARGS \
+    $ARRAY_ARGS \
     --env-file ~/.awsenv \
     --rm \
     --security-opt apparmor:unconfined \
