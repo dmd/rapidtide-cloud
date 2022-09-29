@@ -2,13 +2,19 @@
 set -e
 
 NOW=$(date +%s)
-CFNSTACK=${CFNSTACK:-rapidtide-cfn-$NOW}
-echo "Enter a name for your Cloudformation stack or use this default."
+CFNSTACK=rapidtide-cfn-$NOW
+if [[ "${BASH_VERSINFO:-0}" -ge 4 ]]; then
+    echo "Enter a name for your Cloudformation stack or use this default."
+    ADDLARG="-i $CFNSTACK"
+else
+    echo "Enter a name for your Cloudformation stack."
+    echo "For example, you could use: $CFNSTACK"
+fi
 echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
-read -e -i "$CFNSTACK" -p "Stack name: " CFNSTACK
+read -e $ADDLARG -p "Stack name: " CFNSTACK
 
 echo -e "\nEnter the name of the S3 bucket you've created for your output data."
-read -e -i "$S3OUTBUCKET" -p "Bucket name: " S3OUTBUCKET
+read -e -p "Bucket name: " S3OUTBUCKET
 
 # fail and exit if we cannot read it
 aws s3 ls $S3OUTBUCKET > /dev/null
