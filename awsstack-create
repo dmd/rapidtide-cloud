@@ -15,7 +15,9 @@ aws cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --template-body file:///$PWD/rapidtide-cloud.yaml \
     --stack-name $STACK \
-    --parameters OutputBucket=$BUCKET,HcpOpenaccessSecret=$SECRETARN
+    --parameters \
+      ParameterKey=OutputBucket,ParameterValue=$BUCKET \
+      ParameterKey=HcpOpenaccessSecret,ParameterValue=$SECRETARN
 
 echo "Waiting for completion, this will take several minutes."
 echo "You may Control-c if you don't want to wait; this will not stop the task."
