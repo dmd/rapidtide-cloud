@@ -1,26 +1,35 @@
 #!/bin/bash
-set -eu
+set -e
 
-if [[ $# -ne 3  ]] ; then
-    echo "Usage: $0 stackname bucket secretarn"
+echo "Enter a name for your Cloudformation stack."
+echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
+read -e -i "$CFNSTACK" -p "Stack name: " CFNSTACK
+echo $CFNSTACK
+
+echo -e "\nEnter the name of the S3 bucket you've created for your output data."
+read -e -i "$S3OUTBUCKET" -p "Bucket name: " S3OUTBUCKET
+aws s3 ls $S3OUTBUCKET > /dev/null
+
+
+echo -e "\nEnter the ARN of the secret you saved."
+read -e -i "$SECRETARN" -p "ARN of secret: " SECRETARN
+if [[ $SECRETARN != arn:aws:secret* ]]; then
+    echo "That doesn't look like an ARN."
     exit 1
 fi
-
-STACK=$1
-BUCKET=$2
-SECRETARN=$3
+aws secretsmanager describe-secret --secret-id=$SECRETARN > /dev/null
 
 export AWS_PAGER=
 aws cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --template-body file:///$PWD/rapidtide-cloud.yaml \
-    --stack-name $STACK \
+    --stack-name $CFNSTACK \
     --parameters \
-      ParameterKey=OutputBucket,ParameterValue=$BUCKET \
+      ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET \
       ParameterKey=HcpOpenaccessSecret,ParameterValue=$SECRETARN
 
 echo "Waiting for completion, this will take several minutes."
 echo "You may Control-c if you don't want to wait; this will not stop the task."
-aws cloudformation wait stack-create-complete --stack-name $STACK
+aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
 echo "Done."
 

@@ -5,11 +5,9 @@ Description: >-
 Parameters:
   OutputBucket:
     Type: String
-    Default: dmd-rapidtide-output
     Description: The S3 bucket your output will be written to.
   HcpOpenaccessSecret:
     Type: String
-    Default: 'arn:aws:secretsmanager:us-east-1:256268712194:secret:HCP_OPENACCESS-zSQVSQ'
     Description: The SecretsManager ARN for the colon-separated KEY:SECRET for the hcp-openaccess S3 bucket.
 Resources:
   VPC:
