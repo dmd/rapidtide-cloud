@@ -1,0 +1,24 @@
+#!/bin/bash
+set -eu
+
+if [ $# -ne 3  ] ; then
+    echo "Usage: $0 stackname bucket secretarn"
+    exit 1
+fi
+
+STACK=$1
+BUCKET=$2
+SECRETARN=$3
+
+export AWS_PAGER=
+aws cloudformation create-stack \
+    --capabilities CAPABILITY_IAM \
+    --template-body file:///$PWD/rapidtide-cloud.yaml \
+    --stack-name $STACK \
+    --parameters OutputBucket=$BUCKET,HcpOpenaccessSecret=$SECRETARN
+
+echo "Waiting for completion, this will take several minutes."
+echo "You may Control-c if you don't want to wait; this will not stop the task."
+aws cloudformation wait stack-create-complete --stack-name $STACK
+echo "Done."
+

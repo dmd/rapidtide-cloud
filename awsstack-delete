@@ -1,0 +1,17 @@
+#!/bin/bash
+set -eu
+
+if [$# -ne 1 ]; then
+    echo "Usage: $0 stackname"
+    exit 1
+fi
+
+STACK=$1
+
+aws cloudformation delete-stack --stack-name $STACK
+echo "Waiting for completion, this will take several minutes."
+echo "You may Control-c if you don't want to wait; this will not stop the task."
+aws cloudformation wait stack-delete-complete --stack-name $STACK
+echo "Done."
+echo "Note: If $STACK is not found the delete will have completed in just a few seconds."
+
