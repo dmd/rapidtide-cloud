@@ -7,4 +7,7 @@ Parameters (either to the stack or the batch):
 
 - `HcpOpenaccessSecret` (required): the ARN to an AWS Secret containing your hcp-openaccess bucket credential in a AWS Secret in *plain text* `KEY:SECRET` form
 - `OutputBucket`: (required): The S3 bucket your output will be written to.
-- `ParticipantArrayFile`: (optional) The filename within OutputBucket/config which contains a list of participants to process in an Array job. Defaults to `participants.txt`.
+
+Parameters (to the batch):
+
+- `ParticipantArrayFile`: (optional) The filename within OutputBucket/config which contains a list of participants to process in an Array job. Defaults to `participants.txt`. You could change this to run several different batches and keep track of which ones have which participants.

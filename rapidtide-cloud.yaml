@@ -7,10 +7,6 @@ Parameters:
     Type: String
     Default: dmd-rapidtide-output
     Description: The S3 bucket your output will be written to.
-  ParticipantArrayFile:
-    Type: String
-    Default: participants.txt
-    Description: The filename within OutputBucket/config which contains array values.
   HcpOpenaccessSecret:
     Type: String
     Default: 'arn:aws:secretsmanager:us-east-1:256268712194:secret:HCP_OPENACCESS-zSQVSQ'
@@ -127,7 +123,7 @@ Resources:
           - Name: OUTPUT_BUCKET
             Value: !Ref OutputBucket
           - Name: PARTICIPANT_ARRAY_FILE
-            Value: !Ref ParticipantArrayFile
+            Value: participants.txt
         Secrets:
           - Name: HCP_OPENACCESS_SECRET
             ValueFrom: !Ref HcpOpenaccessSecret
