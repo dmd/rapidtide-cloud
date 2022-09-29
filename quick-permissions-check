@@ -7,7 +7,7 @@ if [[ $TARGET == ARRAY ]]; then
     ARRAY_ARGS=" --env PARTICIPANT_ARRAY_FILE=participants.txt --env AWS_BATCH_JOB_ARRAY_INDEX=1 "
 fi
 docker run \
-    --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output json | jq -r .SecretString) \
+    --env HCP_OPENACCESS_SECRET=$(aws secretsmanager get-secret-value --secret-id HCP_OPENACCESS --output text | cut -d$'\t' -f4 ) \
     --env OUTPUT_BUCKET=dmd-rapidtide-output \
     $ARRAY_ARGS \
     --env-file ~/.awsenv \

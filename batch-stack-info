@@ -1,11 +1,11 @@
 #!/bin/bash
+set -e
 
 TMP=$(mktemp)
 aws cloudformation list-stack-resources --stack-name $1 > $TMP
 
-
-echo --job-queue $(<$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "JobQueue" ))[0].PhysicalResourceId ') \
-     --job-definition $(<$TMP jq -r '.StackResourceSummaries | map (select(.LogicalResourceId == "JobDefinition" ))[0].PhysicalResourceId ')
+echo --job-queue $(grep job-queue $TMP | cut -d'"' -f4) \
+     --job-definition $(grep job-defin $TMP | cut -d'"' -f4)
 
 \rm $TMP
 
