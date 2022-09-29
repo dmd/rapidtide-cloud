@@ -1,7 +1,6 @@
 # rapidtide-cloud
-Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD datasets, on AWS, consisting of a CloudFormation template, some helper/test scripts, and a Dockerfile which extends rapidtide to work with AWS.
+Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD datasets, on AWS, consisting of a CloudFormation template, some helper/test scripts, and a Dockerfile which extends rapidtide to work with AWS. This will eventually be merged into Rapidtide proper.
 
-Currently this is a bit of a mix of "stuff to build this tool" and "the tool itself" - that will be cleaned up when this is all eventually merged into rapidtide itself.
 
 Parameters (either to the stack or the batch):
 
