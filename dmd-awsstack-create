@@ -1,1 +1,0 @@
-./awsstack-create $1 dmd-rapidtide-output arn:aws:secretsmanager:us-east-1:123456789:secret:HCP_OPENACCESS-ezUaOI

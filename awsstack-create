@@ -37,7 +37,7 @@ SECRETARN=$(
 export AWS_PAGER=
 aws cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
-    --template-body file:///$PWD/rapidtide-cloud.yaml \
+    --template-body "file:///$PWD/rapidtide-cloud.yaml" \
     --stack-name $CFNSTACK \
     --parameters \
       ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET \
