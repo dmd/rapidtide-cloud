@@ -17,6 +17,5 @@ rapidtide \
             /data_out/HCP_1200/$P/rapidtide_rfMRI_REST1_LR \
             --filterband lfo \
             --searchrange -15 15 \
-            --passes 2 \
-            --nprocs -1 \
-            --timerange 0 300
+            --passes 3 \
+            --nprocs -1
