@@ -6,10 +6,15 @@ Parameters:
   OutputBucket:
     Type: String
     Description: The S3 bucket your output will be written to.
-  HcpOpenaccessSecret:
-    Type: String
-    Description: The SecretsManager ARN for the colon-separated KEY:SECRET for the hcp-openaccess S3 bucket.
 Resources:
+  HcpOpenaccessSecret:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Description: The user's HCP Openaccess credentials. Will be assigned after stack creation.
+      # following line creates a unique id. this trick only works once per stack creation.
+      # https://stackoverflow.com/a/67162053/30014
+      Name: !Join ['-', ['HCP_OPENACCESS', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref AWS::StackId]]]]]]
+      SecretString: changeme
   VPC:
     Type: 'AWS::EC2::VPC'
     Properties:

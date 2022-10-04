@@ -1,17 +1,10 @@
 #!/bin/bash
 set -e
 
-NOW=$(date +%s)
-CFNSTACK=rapidtide-cfn-$NOW
-if [[ "${BASH_VERSINFO:-0}" -ge 4 ]]; then
-    echo "Enter a name for your Cloudformation stack or use this default."
-    ADDLARG="-i $CFNSTACK"
-else
-    echo "Enter a name for your Cloudformation stack."
-    echo "For example, you could use: $CFNSTACK"
-fi
+echo "Enter a (unique-to-you) name for your Cloudformation stack."
 echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
-read -e $ADDLARG -p "Stack name: " CFNSTACK
+echo "For example, you could use: rapidtide-cfn-$(( $RANDOM % 100 + 1 ))"
+read -e -p "Stack name: " CFNSTACK
 
 echo -e "\nEnter the name of the S3 bucket you've created for your output data."
 read -e -p "Bucket name: " S3OUTBUCKET
@@ -28,24 +21,24 @@ read -e -p "Access Key Secret: " HCPSEC
 AWS_ACCESS_KEY_ID=$HCPKEY AWS_SECRET_ACCESS_KEY=$HCPSEC \
     aws s3 ls hcp-openaccess > /dev/null
 
-SECRETARN=$(
-    aws secretsmanager create-secret \
-    --name HCP_OPENACCESS_$NOW \
-    --secret-string "$HCPKEY:$HCPSEC" \
-    | grep ARN | cut -d '"' -f4 )
-
 export AWS_PAGER=
 aws cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --template-body "file:///$PWD/rapidtide-cloud.yaml" \
     --stack-name $CFNSTACK \
-    --parameters \
-      ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET \
-      ParameterKey=HcpOpenaccessSecret,ParameterValue=$SECRETARN
-
+    --parameters ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET
 echo $CFNSTACK > your-stack-name.txt
 echo "Creating your stack: $CFNSTACK"
 echo "Waiting for completion, this will take several minutes."
 aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
+
+echo "Applying secret."
+SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
+            | grep secret | cut -d'"' -f4)
+aws secretsmanager update-secret \
+    --secret-id $SECRETARN \
+    --description "The user's HCP Openaccess credentials." \
+    --secret-string "$HCPKEY:$HCPSEC"
+
 echo "Done creating $CFNSTACK."
 

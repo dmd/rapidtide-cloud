@@ -17,7 +17,11 @@ Parameters:
 
 ### Create your Cloudformation stack.
 
-Run: `./awsstack-create` and follow the prompt to enter a stack name and your S3 output bucket name.
+Run: `./awsstack-create` and follow the prompts. You will:
+
+- choose a unique-to-you stack name
+- enter the name of your previously created S3 output bucket
+- enter your HCP Open Access credentials
 
 ## Test!
 
@@ -29,6 +33,8 @@ aws batch submit-job \
     --job-name myFirstJob \
     --container-overrides command="/simple-cp-test,100307"
 ```
+
+This will output some information about the created job - you may need to press `q` to exit. (You can prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
 
 Head over to the [Batch console](https://us-east-1.console.aws.amazon.com/batch) and see how it goes. 
 
