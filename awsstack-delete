@@ -4,8 +4,4 @@ set -e
 read -e -p "Stack to delete: " CFNSTACK
 aws cloudformation describe-stacks --stack-name=$CFNSTACK > /dev/null
 aws cloudformation delete-stack --stack-name $CFNSTACK
-echo "Waiting for completion, this will take several minutes."
-echo "You may Control-c if you don't want to wait; this will not stop the task."
-aws cloudformation wait stack-delete-complete --stack-name $CFNSTACK
-echo "Done."
-
+echo "Delete started."
