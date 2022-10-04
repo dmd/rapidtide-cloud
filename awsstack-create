@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if ! aws --version >/dev/null 2>&1; then
+    echo "You need to install the AWS CLI tools first."
+    exit 1
+fi
+
 echo "Enter a (unique-to-you) name for your Cloudformation stack."
 echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
 echo "For example, you could use: rapidtide-cfn-$(( $RANDOM % 100 + 1 ))"
