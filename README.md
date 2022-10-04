@@ -34,7 +34,7 @@ aws batch submit-job \
     --container-overrides command="/simple-cp-test,100307"
 ```
 
-This will output some information about the created job - you may need to press `q` to exit. (You can prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
+This will output some information about the created job. (You may need to press `q` to exit; prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
 
 Head over to the [Batch console](https://us-east-1.console.aws.amazon.com/batch) and see how it goes. 
 
