@@ -13,7 +13,13 @@ Parameters:
 
 ### Create a bucket for your output.
 
-**TODO document**
+You'll need an S3 bucket to store Rapidtide's output. You can use the [web interface](https://s3.console.aws.amazon.com/s3/buckets?region=us-east-1), or just run:
+
+```
+aws s3api create-bucket --bucket your-bucket-name
+```
+
+following the [bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
 
 ### Create your Cloudformation stack.
 
