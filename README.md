@@ -1,12 +1,6 @@
 # rapidtide-cloud
 Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD datasets, on AWS, consisting of a CloudFormation template, some helper/test scripts, and a Dockerfile which extends rapidtide to work with AWS. This will eventually be merged into Rapidtide proper.
 
-
-Parameters:
-
-- `OutputBucket`: (required): The S3 bucket your output will be written to.
-- `ParticipantArrayFile`: (optional job parameter) The filename within OutputBucket/config which contains a list of participants to process in an Array job. Defaults to `participants.txt`. You could change this to run several different batches and keep track of which ones have which participants.
-
 ## Getting started
 
 [Install the AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and run `aws configure`. 
@@ -46,7 +40,7 @@ Head over to the [Batch console](https://us-east-1.console.aws.amazon.com/batch)
 
 ## Run an ARRAY job
 
-In your output bucket, create a directory called `config`, and inside it a file called `participants.txt`.  Each line of that file should be a HCP participant number.
+In your output bucket, create a directory called `config`, and inside it a file called `participants.txt`.[^1]  Each line of that file should be a HCP participant number.
 
 Run:
 
@@ -59,3 +53,6 @@ aws batch submit-job \
 ```
 
 The number given to `size=` must be <= the number of lines in `participants.txt`.
+
+
+[^1]: You can alter what file an array job gets participant IDs from by populating the job parameter `ParticipantArrayFile`, e.g. to run several different batches and keep track of which ones have which participants.
