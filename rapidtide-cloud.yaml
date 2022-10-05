@@ -169,7 +169,7 @@ Resources:
         Type: EC2
         MinvCpus: 0
         DesiredvCpus: 0
-        MaxvCpus: 64
+        MaxvCpus: 1024
         InstanceTypes:
           - optimal
         Subnets:
