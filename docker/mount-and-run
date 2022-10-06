@@ -1,9 +1,15 @@
 #!/bin/bash
 
+if [[ -z $INPUT_BUCKET ]]; then
+    # we're not running in cloud mode. just pass through the command.
+    exec "$@"
+fi
+
+# we are in CLOUD MODE!
+
 mkdir /data_in /data_out
 
 # mount data output folder
-
 if [[ $AWS_EXECUTION_ENV == "AWS_ECS_EC2" ]]; then
     # AWS Batch
     S3FS_AUTH_METHOD="-o ecs"
@@ -11,7 +17,7 @@ elif curl -s -m 1 http://169.254.169.254/latest/dynamic/instance-identity/docume
     # EC2
     S3FS_AUTH_METHOD="-o iam_role"
 else
-    echo "Running outside AWS is not supported."
+    echo "Running in cloud mode but outside AWS is not supported."
     exit 1
 fi
 
