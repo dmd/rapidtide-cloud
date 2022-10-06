@@ -11,7 +11,8 @@ elif curl -s -m 1 http://169.254.169.254/latest/dynamic/instance-identity/docume
     # EC2
     S3FS_AUTH_METHOD="-o iam_role"
 else
-    S3FS_AUTH_METHOD=""
+    echo "Running outside AWS is not supported."
+    exit 1
 fi
 
 s3fs $S3FS_AUTH_METHOD $OUTPUT_BUCKET /data_out
@@ -19,8 +20,8 @@ s3fs $S3FS_AUTH_METHOD $OUTPUT_BUCKET /data_out
 # mount data input folder
 # credentials injected from AWS Secrets in env variable
 
-s3fs -o passwd_file=<( echo $HCP_OPENACCESS_SECRET ) \
-     hcp-openaccess /data_in
+s3fs -o passwd_file=<( echo $INPUT_BUCKET_SECRET ) \
+     $INPUT_BUCKET /data_in
 
 for MOUNT in /data_in /data_out; do
     if ! findmnt -n -P -t fuse.s3fs $MOUNT ; then

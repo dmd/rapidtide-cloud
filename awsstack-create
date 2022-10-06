@@ -12,26 +12,30 @@ echo "For example, you could use: rapidtide-cfn-$(( $RANDOM % 100 + 1 ))"
 read -e -p "Stack name: " CFNSTACK
 
 echo -e "\nEnter the name of the S3 bucket you've created for your output data."
-read -e -p "Bucket name: " S3OUTBUCKET
+read -e -p "Bucket name: " OUTPUT_BUCKET
 
 # fail and exit if we cannot read it
-aws s3 ls $S3OUTBUCKET > /dev/null
+aws s3 ls $OUTPUT_BUCKET > /dev/null
 
-echo -e "\nEnter the AWS Access Key ID you were given for hcp-openaccess."
+# so far we only support hcp-openaccess
+INPUT_BUCKET=hcp-openaccess
+
+echo -e "\nEnter the AWS Access Key ID you were given for $INPUT_BUCKET."
 echo "This is NOT your own AWS credentials."
-read -e -p "Access Key ID: " HCPKEY
-read -e -p "Access Key Secret: " HCPSEC
+read -e -p "Access Key ID: " IBKEY
+read -e -p "Access Key Secret: " IBSEC
 
-# fail and exit if we cannot read hcp-openaccess with those credentials
-AWS_ACCESS_KEY_ID=$HCPKEY AWS_SECRET_ACCESS_KEY=$HCPSEC \
-    aws s3 ls hcp-openaccess > /dev/null
+# fail and exit if we cannot read the input bucket with those credentials
+AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
+    aws s3 ls $INPUT_BUCKET > /dev/null
 
 export AWS_PAGER=
 aws cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --template-body "file:///$PWD/rapidtide-cloud.yaml" \
     --stack-name $CFNSTACK \
-    --parameters ParameterKey=OutputBucket,ParameterValue=$S3OUTBUCKET
+    --parameters ParameterKey=OutputBucket,ParameterValue=$OUTPUT_BUCKET \
+                 ParameterKey=InputBucket,ParameterValue=$INPUT_BUCKET
 echo $CFNSTACK > your-stack-name.txt
 echo "Creating your stack: $CFNSTACK"
 echo "Waiting for completion, this will take several minutes."
@@ -42,8 +46,8 @@ SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
             | grep secret | cut -d'"' -f4)
 aws secretsmanager update-secret \
     --secret-id $SECRETARN \
-    --description "The user's HCP Openaccess credentials." \
-    --secret-string "$HCPKEY:$HCPSEC"
+    --description "The user's $INPUT_BUCKET credentials." \
+    --secret-string "$IBKEY:$IBSEC"
 
 echo "Done creating $CFNSTACK."
 
