@@ -3,6 +3,13 @@ Description: >-
   AWS CloudFormation to create the batch job to run rapidtide-cloud,
   and IAM roles to allow it access to S3 and Secrets.
 Parameters:
+  BatchType:
+    Type: String
+    Description: EC2 or SPOT instances
+    Default: EC2
+    AllowedValues:
+      - EC2
+      - SPOT
   InputBucket:
     Type: String
     Description: The S3 bucket your input will be read from.
@@ -56,6 +63,20 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref Subnet
+  SpotFleetServiceRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - spotfleet.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole
+    Type: AWS::IAM::Role
   SecretsAndS3AccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -172,7 +193,7 @@ Resources:
     Properties:
       Type: MANAGED
       ComputeResources:
-        Type: EC2
+        Type: !Ref BatchType
         MinvCpus: 0
         DesiredvCpus: 0
         MaxvCpus: 1024
@@ -183,6 +204,7 @@ Resources:
         SecurityGroupIds:
           - !Ref SecurityGroup
         InstanceRole: !Ref IamInstanceProfile
+        SpotIamFleetRole: !Ref SpotFleetServiceRole
       ServiceRole: !Ref BatchServiceRole
 Outputs:
   ComputeEnvironmentArn:
