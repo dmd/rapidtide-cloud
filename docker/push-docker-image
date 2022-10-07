@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# aws ecr-public create-repository --repository-name rapidtide-cloud --region us-east-1
-# RETURNED:
-REPO=public.ecr.aws/l0v4l2q2/rapidtide-cloud
-
-docker buildx build --push --platform=linux/amd64,linux/arm64 -t dmd3eorg/rapidtide-cloud .
-
-docker login --username AWS --password $(aws ecr-public get-login-password --region us-east-1) $REPO
-docker buildx build --push --platform=linux/amd64,linux/arm64 -t $REPO .
+REPO="docker://public.ecr.aws/l0v4l2q2/rapidtide-cloud"
+aws ecr-public get-login-password | skopeo login --username AWS --password-stdin public.ecr.aws/l0v4l2q2/rapidtide-cloud
+skopeo copy --all docker://fredericklab/rapidtide-cloud $REPO
