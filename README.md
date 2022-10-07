@@ -31,7 +31,7 @@ Once your stack is created you're ready to submit a test job. Run:
 aws batch submit-job \
     $(./batch-stack-info) \
     --job-name myFirstJob \
-    --container-overrides command="/simple-cp-test,100307"
+    --container-overrides command="/src/rapidtide/cloud/simple-cp-test,100307"
 ```
 
 This will output some information about the created job. (You may need to press `q` to exit; prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
@@ -49,7 +49,7 @@ aws batch submit-job \
     $(./batch-stack-info) \
     --job-name myFirstArrayJob \
     --array-properties size=5 \
-    --container-overrides command="/simple-cp-test,ARRAY"
+    --container-overrides command="/src/rapidtide/cloud/simple-cp-test,ARRAY"
 ```
 
 The number given to `size=` must be <= the number of lines in `participants.txt`.

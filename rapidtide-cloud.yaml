@@ -164,7 +164,7 @@ Resources:
           - Type: MEMORY
             Value: 62000
         Command:
-          - /src/rapidtide/cloud/simple-cp-test
+          - /cloud/simple-cp-test
           - 100307
         Privileged: true
         JobRoleArn: !GetAtt SecretsAndS3AccessRole.Arn
