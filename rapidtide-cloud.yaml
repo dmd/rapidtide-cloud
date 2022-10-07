@@ -164,7 +164,7 @@ Resources:
           - Type: MEMORY
             Value: 62000
         Command:
-          - /simple-cp-test
+          - /src/rapidtide/cloud/simple-cp-test
           - 100307
         Privileged: true
         JobRoleArn: !GetAtt SecretsAndS3AccessRole.Arn
@@ -198,7 +198,9 @@ Resources:
         DesiredvCpus: 0
         MaxvCpus: 1024
         InstanceTypes:
-          - optimal
+        # change this to "optimal" to go back to intel
+          - m6g.4xlarge
+          - r6g.2xlarge
         Subnets:
           - !Ref Subnet
         SecurityGroupIds:
