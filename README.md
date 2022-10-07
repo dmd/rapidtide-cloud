@@ -111,6 +111,8 @@ The script then creates the Cloudformation stack, which includes:
   * currently requesting either a m6g.4xlarge or r6g.2xlarge, which are Graviton (ARM) machines with 64 GB RAM and either 8 or 16 cores.
   * if Intel is wanted instead, this could be changed to "optimal" instead.
 
+The stack requests "on demand" instances; in experimentation I found 64 GB spot instances were nearly always killed in the first 10 minutes, regardless of time of day. This can be changed easily in the stack parameters if desired; the stack includes the necessary service roles.
+
 All of this infrastructure can be cleanly deleted in one step using the `awsstack-delete` script (or similarly with one click in the Cloudformation web console).
 
 ### Github
