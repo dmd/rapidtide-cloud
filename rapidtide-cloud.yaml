@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  AWS CloudFormation to create the batch job to run rapidtide-cloud,
+  AWS CloudFormation to create the batch job to run rapidtide
   and IAM roles to allow it access to S3 and Secrets.
 Parameters:
   BatchType:
@@ -157,7 +157,7 @@ Resources:
     Properties:
       Type: container
       ContainerProperties:
-        Image: public.ecr.aws/l0v4l2q2/rapidtide-cloud
+        Image: public.ecr.aws/l0v4l2q2/rapidtide
         ResourceRequirements:
           - Type: VCPU
             Value: 8
