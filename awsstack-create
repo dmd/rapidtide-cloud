@@ -6,6 +6,12 @@ if ! aws --version >/dev/null 2>&1; then
     exit 1
 fi
 
+if [[ $(aws configure get region) != us-east-1 ]]; then
+    echo "You must configure aws to use the us-east-1 region,"
+    echo "to avoid incurring significant charges for S3 data transfer."
+    exit 1
+fi
+
 echo "Enter a (unique-to-you) name for your Cloudformation stack."
 echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
 echo "For example, you could use: rapidtide-cfn-$(( $RANDOM % 100 + 1 ))"
