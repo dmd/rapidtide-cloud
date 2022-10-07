@@ -85,7 +85,7 @@ Within AWS, considered ParallelCluster vs Batch; landed on Batch because our des
 
 ### The container
 
-I modified the existing Rapidtide Docker container so it's `ENTRYPOINT` is `mount-and-run`, which takes the following actions:
+I modified the existing [Rapidtide Docker container](https://hub.docker.com/r/fredericklab/rapidtide/tags) so its `ENTRYPOINT` is `mount-and-run`, which takes the following actions:
 
 1. Check for the existence of an environment variable that indicates the cloud environment; if it's not found, assume this is just a normal, non-cloud run of the container, and execute whatever program was requested. If is *is* found,
 2. Mount the input (public dataset) and output (personal) S3 buckets on `/data_{in,out}`, using the saved credentials for the input bucket and the user's attached IAM role for the output bucket.
