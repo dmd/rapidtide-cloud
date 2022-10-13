@@ -52,7 +52,7 @@ aws batch submit-job \
     --container-overrides command="/cloud/simple-cp-test,ARRAY"
 ```
 
-The number given to `size=` must be <= the number of lines in `participants.txt`.
+The number given to `size=` must be ≤ the number of lines in `participants.txt`.
 
 
 [^1]: You can alter what file an array job gets participant IDs from by populating the job parameter `ParticipantArrayFile`, e.g. to run several different batches and keep track of which ones have which participants.
