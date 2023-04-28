@@ -157,7 +157,7 @@ Resources:
     Properties:
       Type: container
       ContainerProperties:
-        Image: public.ecr.aws/rapidtide-cloud/rapidtide
+        Image: public.ecr.aws/rapidtide/rapidtide
         ResourceRequirements:
           - Type: VCPU
             Value: 8
