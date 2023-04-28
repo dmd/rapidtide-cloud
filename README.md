@@ -5,6 +5,31 @@ Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD da
 
 [Install the AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and run `aws configure`. 
 
+### Special considerations for SSO
+
+**If and only if you use your organization's SSO to log into AWS**, you need to run
+
+```
+aws configure sso
+```
+
+When login completes, you will see output ending in something like:
+
+```
+To use this profile, specify the profile name using --profile, as shown:
+
+aws s3 ls --profile AWSAdministratorAccess-12345678912
+```
+
+Whatever that label is after `--profile`, make a note of it, and then execute the following commands, substituting that label in:
+
+```
+eval "$(aws configure export-credentials --profile AWSAdministratorAccess-12345678912 --format env)"
+export AWS_PROFILE=AWSAdministratorAccess-12345678912
+```
+
+This will set up your environment to use the `aws` command in this shell session only. (If you get an error, it's because your version of the AWS CLI toolkit is too old; reinstall it from the above link.)
+
 ### Create a bucket for your output.
 
 You'll need an S3 bucket to store Rapidtide's output. You can use the [web interface](https://s3.console.aws.amazon.com/s3/buckets?region=us-east-1), or just run:

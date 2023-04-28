@@ -32,7 +32,7 @@ read -e -p "Access Key ID: " IBKEY
 read -e -p "Access Key Secret: " IBSEC
 
 # fail and exit if we cannot read the input bucket with those credentials
-AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
+AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
     aws s3 ls $INPUT_BUCKET > /dev/null
 
 export AWS_PAGER=
