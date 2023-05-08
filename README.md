@@ -82,6 +82,9 @@ The number given to `size=` must be ≤ the number of lines in `participants.txt
 
 [^1]: You can alter what file an array job gets participant IDs from by populating the job parameter `ParticipantArrayFile`, e.g. to run several different batches and keep track of which ones have which participants.
 
+## Run a real job
+
+Similar to above, but make your own shell script in your config dir and call that instead. You can use similar logic to that in `simple-cp-test` to use or not use array mode, or assume that you are in array mode and directly use the `PARTICIPANT_FROM_ARRAY` environment variable, which will be populated from your `participants.txt`.
 
 
 # Background Information
