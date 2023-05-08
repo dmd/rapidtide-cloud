@@ -56,7 +56,7 @@ Once your stack is created you're ready to submit a test job. Run:
 aws batch submit-job \
     $(./batch-stack-info) \
     --job-name myFirstJob \
-    --container-overrides command="/cloud/simple-cp-test,100307"
+    --container-overrides command=bash,/cloud/simple-cp-test,100307
 ```
 
 This will output some information about the created job. (You may need to press `q` to exit; prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
@@ -74,7 +74,7 @@ aws batch submit-job \
     $(./batch-stack-info) \
     --job-name myFirstArrayJob \
     --array-properties size=5 \
-    --container-overrides command="/cloud/simple-cp-test,ARRAY"
+    --container-overrides command=bash,/cloud/simple-cp-test,ARRAY
 ```
 
 The number given to `size=` must be ≤ the number of lines in `participants.txt`.
@@ -84,7 +84,15 @@ The number given to `size=` must be ≤ the number of lines in `participants.txt
 
 ## Run a real job
 
-Similar to above, but make your own shell script in your config dir and call that instead. You can use similar logic to that in `simple-cp-test` to use or not use array mode, or assume that you are in array mode and directly use the `PARTICIPANT_FROM_ARRAY` environment variable, which will be populated from your `participants.txt`.
+Similar to above, but make your own shell script in your config dir and call that instead. You can use similar logic to that in `simple-cp-test` to use or not use array mode, or assume that you are in array mode and directly use the `PARTICIPANT_FROM_ARRAY` environment variable, which will be populated from your `participants.txt`.  For example:
+
+```bash
+aws batch submit-job \
+    $(./batch-stack-info) \
+    --job-name myFirstRealArrayJob \
+    --array-properties size=5 \
+    --container-overrides command=bash,/data_out/config/your-script,ARRAY
+```
 
 
 # Background Information
