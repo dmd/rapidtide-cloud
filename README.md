@@ -13,6 +13,8 @@ Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD da
 aws configure sso
 ```
 
+If you get an error here saying it doesn't recognize that command, it's because your version of the AWS CLI toolkit is too old; reinstall it from the above link.)
+
 When login completes, you will see output ending in something like:
 
 ```
@@ -28,7 +30,7 @@ eval "$(aws configure export-credentials --profile AWSAdministratorAccess-123456
 export AWS_PROFILE=AWSAdministratorAccess-12345678912
 ```
 
-This will set up your environment to use the `aws` command in this shell session only. (If you get an error, it's because your version of the AWS CLI toolkit is too old; reinstall it from the above link.)
+This will set up your environment to use the `aws` command in this shell session only. 
 
 ### Create a bucket for your output.
 
