@@ -5,6 +5,8 @@ Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD da
 
 [Install the AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and run `aws configure`. 
 
+Clone this repo and cd into it.
+
 <details>
 <summary>Special considerations for SSO - click me if you sign in with your organizational credentials</summary>
 
