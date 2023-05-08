@@ -5,7 +5,8 @@ Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD da
 
 [Install the AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and run `aws configure`. 
 
-### Special considerations for SSO
+<details>
+<summary>Special considerations for SSO - click me if you sign in with your organizational credentials</summary>
 
 **If and only if you use your organization's SSO to log into AWS**, you need to run
 
@@ -31,6 +32,7 @@ export AWS_PROFILE=AWSAdministratorAccess-12345678912
 ```
 
 This will set up your environment to use the `aws` command in this shell session only. 
+</details>
 
 ### Create a bucket for your output.
 
