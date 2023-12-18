@@ -52,11 +52,11 @@ Run: `./awsstack-create` and follow the prompts. You will:
 
 - choose a unique-to-you stack name
 - enter the name of your previously created S3 output bucket
-- enter your HCP Open Access credentials
+- enter your HCP Open Access or NDA package credentials
 
 ## Test!
 
-Once your stack is created you're ready to submit a test job. Run:
+Once your stack is created you're ready to submit a test job. Run (this assumes you are using hcp-openaccess):
 
 ```bash
 aws batch submit-job \
@@ -99,6 +99,13 @@ aws batch submit-job \
     --array-properties size=5 \
     --container-overrides command=bash,/data_out/config/your-script,ARRAY
 ```
+
+## Using NDA Packages
+
+If you are using NDA packages, you'll be prompted to give your package id, username, and password.
+Note this is *not* your NDA username and password - it is the credentials that were generated specifically for the package.
+
+See [this example script](nda-rapidtide-example) for how to use [rapidtide's NDA data downloader](https://github.com/bbfrederick/rapidtide/blob/main/cloud/download-nda-data) with rapidtide-cloud.
 
 
 # Background Information

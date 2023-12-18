@@ -1,0 +1,48 @@
+#!/bin/bash
+set -eu
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage; $0 SUB_SES, e.g. HCA9953406_V1, or $0 ARRAY (where PARTICIPANT_FROM_ARRAY is set)"
+    exit 1
+fi
+
+SUB_SES=$1
+
+if [[ $SUB_SES == ARRAY ]]; then
+    SUB_SES=$PARTICIPANT_FROM_ARRAY
+fi
+
+SUB=$(cut -d_ -f1 <<< $SUB_SES)
+SES=$(cut -d_ -f2 <<< $SUB_SES)
+
+/cloud/download-nda-data $SUB $SES
+
+SOURCEDIR=/data_in/fmriresults01/${SUB}_${SES}_MR
+DESTDIR=/data_out/hcp-a/sub-${SUB}/ses-${SES}
+
+. ${FSLDIR}/etc/fslconf/fsl.sh
+
+mkdir -p ${DESTDIR}
+
+flirt \
+    -in ${SOURCEDIR}/MNINonLinear/aparc+aseg.nii.gz \
+    -ref ${SOURCEDIR}/MNINonLinear/Results/rfMRI_REST1_PA/brainmask_fs.2.nii.gz \
+    -applyxfm \
+    -init ${FSLDIR}/data/atlases/bin/eye.mat \
+    -interp nearestneighbour \
+    -out ${DESTDIR}/sub-${SUB}_ses-${SES}_desc-aparc+aseg_res-2.nii.gz
+
+rapidtide \
+    ${SOURCEDIR}/MNINonLinear/Results/rfMRI_REST1_PA/rfMRI_REST1_PA.nii.gz \
+    ${DESTDIR}/sub-${SUB}_ses-${SES} \
+    --spatialfilt 2 \
+    --passes 3 \
+    --pickleft \
+    --despecklepasses 4 \
+    --nprocs -1 \
+    --searchrange -10 15 \
+    --globalmeaninclude ${DESTDIR}/sub-${SUB}_ses-${SES}_desc-aparc+aseg_res-2.nii.gz:APARC_GRAY \
+    --globalmeanexclude ${SOURCEDIR}/MNINonLinear/Results/rfMRI_REST1_PA/rfMRI_REST1_PA_dropouts.nii.gz \
+    --corrmask ${SOURCEDIR}/MNINonLinear/Results/rfMRI_REST1_PA/brainmask_fs.2.nii.gz \
+    --refineexclude ${SOURCEDIR}/MNINonLinear/Results/rfMRI_REST1_PA/rfMRI_REST1_PA_dropouts.nii.gz \
+    --noglm
