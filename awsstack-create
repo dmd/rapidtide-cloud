@@ -23,17 +23,31 @@ read -e -p "Bucket name: " OUTPUT_BUCKET
 # fail and exit if we cannot read it
 aws s3 ls $OUTPUT_BUCKET > /dev/null
 
-# so far we only support hcp-openaccess
-INPUT_BUCKET=hcp-openaccess
+# so far we only support hcp-openaccess and local
+echo "Only hcp-openaccess and local storage are supported for input sources."
+PS3="Select input source: "
+INPUT_CHOICES=("hcp-openaccess" "local")
+select INPUT_BUCKET in "${INPUT_CHOICES[@]}"; do
+    case $INPUT_BUCKET in
+        "hcp-openaccess")
+            echo -e "\nEnter the AWS Access Key ID you were given for $INPUT_BUCKET."
+            echo "This is NOT your own AWS credentials."
+            read -e -p "Access Key ID: " IBKEY
+            read -e -p "Access Key Secret: " IBSEC
 
-echo -e "\nEnter the AWS Access Key ID you were given for $INPUT_BUCKET."
-echo "This is NOT your own AWS credentials."
-read -e -p "Access Key ID: " IBKEY
-read -e -p "Access Key Secret: " IBSEC
+            # fail and exit if we cannot read the input bucket with those credentials
+            AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
+                aws s3 ls $INPUT_BUCKET > /dev/null
+            break
+            ;;
+        "local")
+            echo "Using local storage."
+            break
+            ;;
+        *) echo "Invalid option $REPLY";;
+    esac
+done
 
-# fail and exit if we cannot read the input bucket with those credentials
-AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
-    aws s3 ls $INPUT_BUCKET > /dev/null
 
 export AWS_PAGER=
 aws cloudformation create-stack \
@@ -47,13 +61,15 @@ echo "Creating your stack: $CFNSTACK"
 echo "Waiting for completion, this will take several minutes."
 aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
 
-echo "Applying secret."
-SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
-            | grep secret | cut -d'"' -f4)
-aws secretsmanager update-secret \
-    --secret-id $SECRETARN \
-    --description "The user's $INPUT_BUCKET credentials." \
-    --secret-string "$IBKEY:$IBSEC"
+if [[ "$INPUT_BUCKET" != "local" ]]; then
+    echo "Applying secret."
+    SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
+                | grep secret | cut -d'"' -f4)
+    aws secretsmanager update-secret \
+        --secret-id $SECRETARN \
+        --description "The user's $INPUT_BUCKET credentials." \
+        --secret-string "$IBKEY:$IBSEC"
+fi
 
 echo "Done creating $CFNSTACK."
 
