@@ -1,63 +1,73 @@
 #!/bin/bash
 set -e
 
-if ! aws --version >/dev/null 2>&1; then
-    echo "You need to install the AWS CLI tools first."
+if ! command -v gum >/dev/null 2>&1; then
+    echo "You need to install the 'gum' interaction tool first."
+    echo "Visit: https://github.com/charmbracelet/gum?tab=readme-ov-file#installation"
+    exit 1
+fi
+
+if ! command -v aws >/dev/null 2>&1; then
+gum format 'You need to install the AWS CLI tools first.
+    Visit: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html'
     exit 1
 fi
 
 if [[ $(aws configure get region) != us-east-1 ]]; then
-    echo "You must configure aws to use the us-east-1 region,"
-    echo "to avoid incurring significant charges for S3 data transfer."
+    gum format 'You must configure aws to use the **us-east-1*8 region,
+        to avoid incurring significant charges for S3 data transfer.'
     exit 1
 fi
 
-echo "Enter a (unique-to-you) name for your Cloudformation stack."
-echo "It can include letters (A-Z and a-z), numbers (0-9), and dashes (-)."
-echo "For example, you could use: rapidtide-cfn-$(( $RANDOM % 100 + 1 ))"
-read -e -p "Stack name: " CFNSTACK
+gum format 'Enter a (unique-to-you) name for your Cloudformation stack.
+    It can include letters (A-Z and a-z), numbers (0-9), and dashes (-).
+    You can use the default, or something meaningful to your project.'
+CFNSTACK=$(gum input --value="rapidtide-stack-$(( RANDOM % 100 + 1 ))")
+gum format 'Stack name: **'$CFNSTACK'**'
 
-echo -e "\nEnter the name of the S3 bucket you've created for your output data."
-read -e -p "Bucket name: " OUTPUT_BUCKET
+echo
+gum format 'Enter the name of the S3 bucket you created for your output data.'
+OUTPUT_BUCKET=$(gum input)
+gum format 'Output bucket: **'$OUTPUT_BUCKET'**'
 
 # fail and exit if we cannot read it
 aws s3 ls $OUTPUT_BUCKET > /dev/null
 
 # so far we only support hcp-openaccess and local
-echo "Only hcp-openaccess and local storage are supported for input sources."
-PS3="Select input source: "
-INPUT_CHOICES=("hcp-openaccess" "local")
-select INPUT_BUCKET in "${INPUT_CHOICES[@]}"; do
-    case $INPUT_BUCKET in
-        "hcp-openaccess")
-            echo -e "\nEnter the AWS Access Key ID you were given for $INPUT_BUCKET."
-            echo "This is NOT your own AWS credentials."
-            read -e -p "Access Key ID: " IBKEY
-            read -e -p "Access Key Secret: " IBSEC
+echo
+gum format 'Only hcp-openaccess and local storage are supported for input sources.'
 
-            # fail and exit if we cannot read the input bucket with those credentials
-            AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
-                aws s3 ls $INPUT_BUCKET > /dev/null
-            break
-            ;;
-        "local")
-            echo "Using local storage."
-            echo "Enter credentials for your NDA package. This is NOT your NDA site login."
-            echo "If you are not using an NDA package (and are populating some other way) leave these blank."
-            read -e -p "Package number: " NDA_PACKAGE
-            read -e -p "Package username: " NDA_USERNAME
-            read -e -p "Package password: " NDA_PASSWORD
-            break
-            ;;
-        *) echo "Invalid option $REPLY";;
-    esac
-done
+INPUT_BUCKET=$(gum choose --header="Select input source:" "hcp-openaccess" "local")
+case $INPUT_BUCKET in
+    hcp-openaccess)
+        echo
+        gum format 'Enter the credentials you were given for **'$INPUT_BUCKET'**.
+            This is NOT your own AWS credentials.'
+        IBKEY=$(gum input --placeholder="Access Key ID")
+        gum format "Key: $IBKEY"
+        IBSEC=$(gum input --placeholder="Access Key Secret" --password)
 
-SECRET_STRING=$(jq -n --arg ibs "$IBKEY:$IBSEC" \
-                    --arg npa "$NDA_PACKAGE" \
-                    --arg nus "$NDA_USERNAME" \
-                    --arg npw "$NDA_PASSWORD" \
-                    '{IBS3SECRET: $ibs, NDA_PACKAGE: $npa, NDA_USERNAME: $nus, NDA_PASSWORD: $npw}')
+        # fail and exit if we cannot read the input bucket with those credentials
+        AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
+            aws s3 ls $INPUT_BUCKET > /dev/null
+        ;;
+    local)
+        echo
+        gum format 'Using local storage.
+            Enter credentials for your NDA package. This is NOT your NDA site login.
+            If you are not using an NDA package leave these blank.'
+        NDA_PACKAGE=$(gum input --placeholder="Package number")
+        if [ -n "$NDA_PACKAGE" ]; then
+            gum format "Package number: $NDA_PACKAGE"
+            NDA_USERNAME=$(gum input --placeholder="Package username")
+            gum format "Package username: $NDA_USERNAME"
+            NDA_PASSWORD=$(gum input --placeholder="Package password" --password)
+        else
+            gum format "Not using NDA downloader."
+        fi
+        ;;
+esac
+
 
 export AWS_PAGER=
 aws cloudformation create-stack \
@@ -67,11 +77,15 @@ aws cloudformation create-stack \
     --parameters ParameterKey=OutputBucket,ParameterValue=$OUTPUT_BUCKET \
                  ParameterKey=InputBucket,ParameterValue=$INPUT_BUCKET
 echo $CFNSTACK > your-stack-name.txt
-echo "Creating your stack: $CFNSTACK"
-echo "Waiting for completion, this will take several minutes."
-aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
+gum spin --title="Creating $CFNSTACK. This will take a few minutes." -- \
+    aws cloudformation wait stack-create-complete --stack-name $CFNSTACK
 
-echo "Applying secret."
+gum format "Applying secret."
+SECRET_STRING=$(jq -n --arg ibs "$IBKEY:$IBSEC" \
+                    --arg npa "$NDA_PACKAGE" \
+                    --arg nus "$NDA_USERNAME" \
+                    --arg npw "$NDA_PASSWORD" \
+                    '{IBS3SECRET: $ibs, NDA_PACKAGE: $npa, NDA_USERNAME: $nus, NDA_PASSWORD: $npw}')
 SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
             | grep secret | cut -d'"' -f4)
 aws secretsmanager update-secret \
@@ -79,4 +93,4 @@ aws secretsmanager update-secret \
     --description "The user's input source credentials." \
     --secret-string "$SECRET_STRING"
 
-echo "Done creating $CFNSTACK."
+gum format 'Done creating **'$CFNSTACK'**.'

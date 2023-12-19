@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
-read -e -p "Stack to delete: " CFNSTACK
+if [ -f your-stack-name.txt ]; then
+    CFNSTACKDEFAULT=$(cat your-stack-name.txt)
+fi
+CFNSTACK=$(gum input --header="Stack to delete:" --value=$CFNSTACKDEFAULT)
+gum format 'Stack to delete: **'$CFNSTACK'**'
+
 aws cloudformation describe-stacks --stack-name=$CFNSTACK > /dev/null
 aws cloudformation delete-stack --stack-name $CFNSTACK
 echo "Delete started."
