@@ -38,22 +38,26 @@ select INPUT_BUCKET in "${INPUT_CHOICES[@]}"; do
             # fail and exit if we cannot read the input bucket with those credentials
             AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
                 aws s3 ls $INPUT_BUCKET > /dev/null
-            SECRET="$IBKEY:$IBSEC"
             break
             ;;
         "local")
             echo "Using local storage."
-            echo "Enter credentials for your NDA package. This not NOT your NDA site login."
+            echo "Enter credentials for your NDA package. This is NOT your NDA site login."
             echo "If you are not using an NDA package (and are populating some other way) leave these blank."
             read -e -p "Package number: " NDA_PACKAGE
             read -e -p "Package username: " NDA_USERNAME
             read -e -p "Package password: " NDA_PASSWORD
-            SECRET="$NDA_PACKAGE:$NDA_USERNAME:$NDA_PASSWORD"
             break
             ;;
         *) echo "Invalid option $REPLY";;
     esac
 done
+
+SECRET_STRING=$(jq -n --arg ibs "$IBKEY:$IBSEC" \
+                    --arg npa "$NDA_PACKAGE" \
+                    --arg nus "$NDA_USERNAME" \
+                    --arg npw "$NDA_PASSWORD" \
+                    '{IBS3SECRET: $ibs, NDA_PACKAGE: $npa, NDA_USERNAME: $nus, NDA_PASSWORD: $npw}')
 
 export AWS_PAGER=
 aws cloudformation create-stack \
@@ -73,7 +77,6 @@ SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
 aws secretsmanager update-secret \
     --secret-id $SECRETARN \
     --description "The user's input source credentials." \
-    --secret-string "$SECRET"
+    --secret-string "$SECRET_STRING"
 
 echo "Done creating $CFNSTACK."
-
