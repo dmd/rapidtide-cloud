@@ -3,7 +3,14 @@ Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD da
 
 ## Getting started
 
-[Install the AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and run `aws configure`. 
+### Install Prerequisites 
+
+* [AWS CLI toolkit](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+* [GUM](https://github.com/charmbracelet/gum)
+
+### Authenticate to AWS
+
+* run `aws configure`. 
 
 Clone this repo and cd into it.
 
