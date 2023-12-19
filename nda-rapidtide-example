@@ -12,8 +12,7 @@ if [[ $SUB_SES == ARRAY ]]; then
     SUB_SES=$PARTICIPANT_FROM_ARRAY
 fi
 
-SUB=$(cut -d_ -f1 <<< $SUB_SES)
-SES=$(cut -d_ -f2 <<< $SUB_SES)
+IFS=_ read SUB SES <<< $SUB_SES
 
 /cloud/download-nda-data $SUB $SES
 
