@@ -1,12 +1,13 @@
 #!/bin/bash
 set -e
 
-TMP=$(mktemp)
-STACK=${1:-$(cat your-stack-name.txt)}
-aws cloudformation list-stack-resources --stack-name $STACK > $TMP
+JSON=$(mktemp)
+aws cloudformation list-stack-resources --stack-name ${1:-$(cat your-stack-name.txt)} > $JSON
 
-echo --job-queue $(grep job-queue $TMP | cut -d'"' -f4) \
-     --job-definition $(grep job-defin $TMP | cut -d'"' -f4)
+JOBQUEUE=$(jq '.StackResourceSummaries[] | select(.LogicalResourceId == "JobQueue") | .PhysicalResourceId' $JSON)
+JOBDEF=$(jq '.StackResourceSummaries[] | select(.LogicalResourceId == "JobDefinition") | .PhysicalResourceId' $JSON)
 
-\rm $TMP
+echo --job-queue $JOBQUEUE --job-definition $JOBDEF
+
+\rm $JSON
 
