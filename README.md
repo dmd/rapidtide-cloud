@@ -61,6 +61,11 @@ Run: `./awsstack-create` and follow the prompts. You will:
 - enter the name of your previously created S3 output bucket
 - enter your HCP Open Access or NDA package credentials
 
+
+<details>
+<summary>Expand for video of awsstack-create</summary>
+<a href="https://asciinema.org/a/AKKT5HkXjRzSxq4BxvpeP1zF3" target="_blank"><img src="https://asciinema.org/a/AKKT5HkXjRzSxq4BxvpeP1zF3.svg" /></a></details>
+
 ## Test!
 
 Once your stack is created you're ready to submit a test job. Run (this assumes you are using hcp-openaccess):
