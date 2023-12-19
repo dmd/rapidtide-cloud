@@ -87,7 +87,7 @@ SECRET_STRING=$(jq -n --arg ibs "$IBKEY:$IBSEC" \
                     --arg npw "$NDA_PASSWORD" \
                     '{IBS3SECRET: $ibs, NDA_PACKAGE: $npa, NDA_USERNAME: $nus, NDA_PASSWORD: $npw}')
 SECRETARN=$(aws cloudformation describe-stack-resources --stack-name $CFNSTACK \
-            | grep secret | cut -d'"' -f4)
+            | jq -r '.StackResources[] | select(.LogicalResourceId == "InputBucketSecret") | .PhysicalResourceId')
 aws secretsmanager update-secret \
     --secret-id $SECRETARN \
     --description "The user's input source credentials." \
