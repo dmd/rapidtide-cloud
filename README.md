@@ -1,6 +1,8 @@
 # rapidtide-cloud
 Tool to run [Rapidtide](https://github.com/bbfrederick/rapidtide) on HCP/ABCD datasets, on AWS, consisting of a CloudFormation template and some helper/test scripts.
 
+[![asciicast](https://asciinema.org/a/AKKT5HkXjRzSxq4BxvpeP1zF3.svg)](https://asciinema.org/a/AKKT5HkXjRzSxq4BxvpeP1zF3)
+
 ## Getting started
 
 ### Install Prerequisites 
