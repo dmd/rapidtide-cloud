@@ -33,11 +33,11 @@ gum format 'Output bucket: **'$OUTPUT_BUCKET'**'
 # fail and exit if we cannot read it
 aws s3 ls $OUTPUT_BUCKET > /dev/null
 
-# so far we only support hcp-openaccess and local
+# so far we only support hcp-openaccess and s3-working
 echo
-gum format 'Only hcp-openaccess and local storage are supported for input sources.'
+gum format 'Only hcp-openaccess and s3-working storage are supported for input sources.'
 
-INPUT_BUCKET=$(gum choose --header="Select input source:" "hcp-openaccess" "local")
+INPUT_BUCKET=$(gum choose --header="Select input source:" "hcp-openaccess" "s3-working")
 case $INPUT_BUCKET in
     hcp-openaccess)
         echo
@@ -51,9 +51,10 @@ case $INPUT_BUCKET in
         AWS_SESSION_TOKEN= AWS_ACCESS_KEY_ID=$IBKEY AWS_SECRET_ACCESS_KEY=$IBSEC \
             aws s3 ls $INPUT_BUCKET > /dev/null
         ;;
-    local)
+    s3-working)
         echo
-        gum format 'Using local storage.
+        INPUT_BUCKET=local
+        gum format 'Using s3-working storage in your output bucket.
             Enter credentials for your NDA package. This is NOT your NDA site login.
             If you are not using an NDA package leave these blank.'
         NDA_PACKAGE=$(gum input --placeholder="Package number")
