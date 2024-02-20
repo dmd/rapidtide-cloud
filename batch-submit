@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# aws batch submit-job --job-queue "arn:aws:batch:us-east-1:434245788206:job-queue/JobQueue-1NJIEj4jiFmsIbSL" --job-definition "arn:aws:batch:us-east-1:434245788206:job-definition/JobDefinition-3de72c3bd59f15a:1" --job-name niceandwide --array-properties size=14 --container-overrides command=bash,/data_out/config/feb18-toplevel-runner,ARRAY
-
 QUEDEF=$(./batch-stack-info)
 
 while [[ "$#" -gt 0 ]]; do
@@ -45,6 +43,5 @@ if [[ -n $ARRAYSIZE ]]; then
 fi
 RUNCMD+=" --container-overrides command=bash,$COMMAND,$PARTICIPANT"
 
-# I have no idea why just $RUNCMD by itself doesn't work and I have to echo | bash
 echo $RUNCMD
-echo $RUNCMD | bash
+$RUNCMD

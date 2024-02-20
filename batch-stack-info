@@ -4,10 +4,9 @@ set -e
 JSON=$(mktemp)
 aws cloudformation list-stack-resources --stack-name ${1:-$(cat your-stack-name.txt)} > $JSON
 
-JOBQUEUE=$(jq '.StackResourceSummaries[] | select(.LogicalResourceId == "JobQueue") | .PhysicalResourceId' $JSON)
-JOBDEF=$(jq '.StackResourceSummaries[] | select(.LogicalResourceId == "JobDefinition") | .PhysicalResourceId' $JSON)
+JOBQUEUE=$(jq -r '.StackResourceSummaries[] | select(.LogicalResourceId == "JobQueue") | .PhysicalResourceId' $JSON)
+JOBDEF=$(jq -r '.StackResourceSummaries[] | select(.LogicalResourceId == "JobDefinition") | .PhysicalResourceId' $JSON)
 
 echo --job-queue $JOBQUEUE --job-definition $JOBDEF
 
 \rm $JSON
-
