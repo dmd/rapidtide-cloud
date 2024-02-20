@@ -14,7 +14,7 @@ gum format 'You need to install the AWS CLI tools first.
 fi
 
 if [[ $(aws configure get region) != us-east-1 ]]; then
-    gum format 'You must configure aws to use the **us-east-1*8 region,
+    gum format 'You must configure aws to use the **us-east-1** region,
         to avoid incurring significant charges for S3 data transfer.'
     exit 1
 fi
