@@ -73,11 +73,15 @@ Run: `./awsstack-create` and follow the prompts. You will:
 Once your stack is created you're ready to submit a test job. Run (this assumes you are using hcp-openaccess):
 
 ```bash
-aws batch submit-job \
-    $(./batch-stack-info) \
-    --job-name myFirstJob \
-    --container-overrides command=bash,/cloud/simple-cp-test,100307
+./batch-submit --jobname myFirstJob \
+               --participant 100307 \
+               --command /cloud/simple-cp-test
 ```
+
+Alternatively, just run `./batch-submit` and fill the information in at the prompts. 
+Any arguments to `./batch-submit` mean skipping the relevant prompt. Arguments have short versions as well (e.g., `--jobname` can be `-j`).
+
+[![asciicast](https://asciinema.org/a/MnCsKnSXe5u6zCji2LsSsQbWh.svg)](https://asciinema.org/a/MnCsKnSXe5u6zCji2LsSsQbWh)
 
 This will output some information about the created job. (You may need to press `q` to exit; prevent this in the future by putting `export AWS_PAGER=` in your `.bashrc`.)
 
@@ -90,28 +94,24 @@ In your output bucket, create a directory called `config`, and inside it a file 
 Run:
 
 ```bash
-aws batch submit-job \
-    $(./batch-stack-info) \
-    --job-name myFirstArrayJob \
-    --array-properties size=5 \
-    --container-overrides command=bash,/cloud/simple-cp-test,ARRAY
+./batch-submit --jobname myFirstArrayJob \
+               --arraysize 5 \
+               --command /cloud/simple-cp-test
 ```
 
-The number given to `size=` must be ≤ the number of lines in `participants.txt`. Only the first `size` lines will be run.
+The number given to `arraysize` must be ≤ the number of lines in `participants.txt`. Only the first `size` lines will be run.
 
 
-[^1]: You can alter what file an array job gets participant IDs from by populating the job parameter `ParticipantArrayFile`, e.g. to run several different batches and keep track of which ones have which participants.
+[^1]: You can alter what file an array job gets participant IDs from by populating the job parameter `ParticipantArrayFile`, e.g. to run several different batches and keep track of which ones have which participants. You'd need to run the `aws batch submit-job` command manually for this.
 
 ## Run a real job
 
 Similar to above, but make your own shell script in your config dir and call that instead. You can use similar logic to that in `simple-cp-test` to use or not use array mode, or assume that you are in array mode and directly use the `PARTICIPANT_FROM_ARRAY` environment variable, which will be populated from your `participants.txt`.  For example:
 
 ```bash
-aws batch submit-job \
-    $(./batch-stack-info) \
-    --job-name myFirstRealArrayJob \
-    --array-properties size=5 \
-    --container-overrides command=bash,/data_out/config/your-script,ARRAY
+./batch-submit --jobname myFirstRealArrayJob \
+               --arraysize 5 \
+               --command /data_out/config/your-script
 ```
 
 ## Using NDA Packages

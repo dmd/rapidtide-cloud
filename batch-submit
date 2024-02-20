@@ -1,0 +1,50 @@
+#!/bin/bash
+set -e
+
+# aws batch submit-job --job-queue "arn:aws:batch:us-east-1:434245788206:job-queue/JobQueue-1NJIEj4jiFmsIbSL" --job-definition "arn:aws:batch:us-east-1:434245788206:job-definition/JobDefinition-3de72c3bd59f15a:1" --job-name niceandwide --array-properties size=14 --container-overrides command=bash,/data_out/config/feb18-toplevel-runner,ARRAY
+
+QUEDEF=$(./batch-stack-info)
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --jobname|-j) JOBNAME="$2"; shift ;;
+        --arraysize|-a) ARRAYSIZE="$2"; shift ;;
+        --command|-c) COMMAND="$2"; shift ;;
+        --participant|-p) PARTICIPANT="$2"; shift;;
+        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+done
+
+if [[ -z $JOBNAME ]]; then
+    JOBNAME=$(gum input --prompt "Job name? " --placeholder "something to identify your job")
+fi
+
+if [[ -z $ARRAYSIZE && -z $PARTICIPANT ]]; then
+    if gum confirm "Is this an array job?"; then
+        ARRAYSIZE=$(gum input --prompt "Array size? " \
+                    --placeholder "usually equal to lines in participants.txt")
+    fi
+fi
+if [[ -n $ARRAYSIZE ]]; then
+    PARTICIPANT=ARRAY
+fi
+
+if [[ -z $PARTICIPANT ]]; then
+    PARTICIPANT=$(gum input --prompt "Participant and session? " \
+                  --placeholder "participant_session")
+fi
+
+if [[ -z $COMMAND ]]; then
+    COMMAND=$(gum input --prompt "Command? " --value="/data_out/config/")
+fi
+
+RUNCMD="aws batch submit-job $QUEDEF --job-name $JOBNAME"
+if [[ -n $ARRAYSIZE ]]; then
+    RUNCMD+=" --array-properties size=$ARRAYSIZE"
+fi
+RUNCMD+=" --container-overrides command=bash,$COMMAND,$PARTICIPANT"
+
+# I have no idea why just $RUNCMD by itself doesn't work and I have to echo | bash
+echo $RUNCMD
+echo $RUNCMD | bash
