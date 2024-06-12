@@ -1,21 +1,24 @@
 #!/bin/bash
 set -e
 
-QUEDEF=$(./batch-stack-info)
-
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --jobname|-j) JOBNAME="$2"; shift ;;
         --arraysize|-a) ARRAYSIZE="$2"; shift ;;
         --command|-c) COMMAND="$2"; shift ;;
         --participant|-p) PARTICIPANT="$2"; shift;;
+        --stack|-s) STACK="$2"; shift;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
 
+QUEDEF=$(./batch-stack-info ${STACK:-$(cat your-stack-name.txt)})
+
+echo $QUEDEF
+
 if [[ -z $JOBNAME ]]; then
-    JOBNAME=$(gum input --prompt "Job name? " --placeholder "something to identify your job")
+    JOBNAME=$(gum input --prompt "Job name? " --placeholder "something to id your job")
 fi
 
 if [[ -z $ARRAYSIZE && -z $PARTICIPANT ]]; then
