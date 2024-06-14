@@ -183,6 +183,8 @@ Resources:
             ValueFrom: !Ref InputBucketSecret
       RetryStrategy:
         Attempts: 1
+      Timeout:
+        AttemptDurationSeconds: 36000
   JobQueue:
     Type: 'AWS::Batch::JobQueue'
     Properties:
