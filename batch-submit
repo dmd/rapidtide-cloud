@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Default per-job timeout of 6 hours (21600 seconds)
+TIMEOUT=21600
+
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --jobname|-j) JOBNAME="$2"; shift ;;
@@ -8,6 +11,7 @@ while [[ "$#" -gt 0 ]]; do
         --command|-c) COMMAND="$2"; shift ;;
         --participant|-p) PARTICIPANT="$2"; shift;;
         --stack|-s) STACK="$2"; shift;;
+        --timeout|-t) TIMEOUT="$2"; shift;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
@@ -40,7 +44,7 @@ if [[ -z $COMMAND ]]; then
     COMMAND=$(gum input --prompt "Command? " --value="/data_out/config/")
 fi
 
-RUNCMD="aws batch submit-job $QUEDEF --job-name $JOBNAME"
+RUNCMD="aws batch submit-job $QUEDEF --job-name $JOBNAME --timeout attemptDurationSeconds=$TIMEOUT"
 if [[ -n $ARRAYSIZE ]]; then
     RUNCMD+=" --array-properties size=$ARRAYSIZE"
 fi
